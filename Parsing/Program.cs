@@ -11,7 +11,7 @@ namespace Parsing
         static void Main(string[] args)
         {
             Parser parser = new Parser();
-            parser.Out();
+            parser.Parsing();
         }
     }
 }
