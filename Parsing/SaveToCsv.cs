@@ -15,20 +15,27 @@ namespace Parsing
     internal class SaveToCsv
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(SaveToCsv));
-        string path = "etfs.tsv";
         public void Save(List<EtfData> etfMarketDatas)
         {
-
-            using (var writer = new StreamWriter(path))
+            string pathFile = $"{DateTime.Now.ToString().Remove(0, 11).Replace(":", "_")}" + ".tsv";
+            string pathDir = DateTime.Now.ToString().Remove(10).Replace(".", "_");
+            if (!Directory.Exists(pathDir))
             {
-
+                Directory.CreateDirectory(pathDir);
+            }
+            string pathCsv = Path.Combine(Directory.GetCurrentDirectory(), pathDir, pathFile);
+            if (!File.Exists(pathCsv))
+            {
+                File.Create(pathCsv).Close();
+            }
+            using (var writer = new StreamWriter(pathCsv))
+            {
                 var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    //Encoding = Encoding.UTF8,
                     Encoding = new UTF8Encoding(true),
                     Delimiter = "\t",
-                    HasHeaderRecord = true, // включаем заголовки
-                    Mode = CsvMode.RFC4180, // стандартный режим CSV
+                    HasHeaderRecord = true,
+                    //Mode = CsvMode.RFC4180, // стандартный режим CSV
                 };
                 using (var csv = new CsvWriter(writer, csvConfig))
                 {
@@ -36,34 +43,27 @@ namespace Parsing
                     csv.WriteRecords(etfMarketDatas);
                 }
             }
-
-            //using (var writer = new StreamWriter("ETF.csv"))
-            //{
-            //    foreach (var row in etfMarketDatas)
-            //    {
-            //        string csvLine = string.Join("\t", row);
-            //        writer.WriteLine(csvLine);
-            //    }
-            //}
-            //using (var writer = new StreamWriter("etfs.csv"))
-            //using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            //{
-            //    csv.WriteRecords(etfMarketDatas);
-            //}
-
-            //using (var writer = new StreamWriter(path, false))
-            //{
-            //    var csvConfig = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU"))
-            //    {
-            //        //HasHeaderRecord = true,
-            //        Delimiter = "\t"
-            //    };
-            //    using (var csv = new CsvWriter(writer, csvConfig))
-            //    {
-            //        csv.WriteRecords(etfMarketDatas);
-            //    }
-            //}
         }
     }
 }
 
+/*    if (!Directory.Exists(csvFilePathStocks))
+      {
+        Directory.CreateDirectory(csvFilePathStocks);
+      }
+      string fileName = $"Stock_{dateGetParsing}.csv";
+      csvFilePathStocks = Path.Combine(csvFilePathStocks, fileName);
+      if (!File.Exists(csvFilePathStocks))
+      {
+        File.Create(csvFilePathStocks).Close();
+      }
+      if (!Directory.Exists(csvFilePathBonds))
+      {
+        Directory.CreateDirectory(csvFilePathBonds);
+      }
+      string _fileName = $"Bond_{dateGetParsing}.csv";
+      csvFilePathBonds = Path.Combine(csvFilePathBonds, _fileName);
+      if (!File.Exists(csvFilePathBonds))
+      {
+        File.Create(csvFilePathBonds).Close();
+      }*/
