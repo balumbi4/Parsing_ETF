@@ -35,7 +35,6 @@ namespace Parsing
                     Encoding = new UTF8Encoding(true),
                     Delimiter = "\t",
                     HasHeaderRecord = true,
-                    //Mode = CsvMode.RFC4180, // стандартный режим CSV
                 };
                 using (var csv = new CsvWriter(writer, csvConfig))
                 {
@@ -46,24 +45,3 @@ namespace Parsing
         }
     }
 }
-
-/*    if (!Directory.Exists(csvFilePathStocks))
-      {
-        Directory.CreateDirectory(csvFilePathStocks);
-      }
-      string fileName = $"Stock_{dateGetParsing}.csv";
-      csvFilePathStocks = Path.Combine(csvFilePathStocks, fileName);
-      if (!File.Exists(csvFilePathStocks))
-      {
-        File.Create(csvFilePathStocks).Close();
-      }
-      if (!Directory.Exists(csvFilePathBonds))
-      {
-        Directory.CreateDirectory(csvFilePathBonds);
-      }
-      string _fileName = $"Bond_{dateGetParsing}.csv";
-      csvFilePathBonds = Path.Combine(csvFilePathBonds, _fileName);
-      if (!File.Exists(csvFilePathBonds))
-      {
-        File.Create(csvFilePathBonds).Close();
-      }*/

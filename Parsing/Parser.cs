@@ -64,7 +64,6 @@ namespace Parsing
             res = Convert.ToInt32(str);
             return res;
         }
-        /*25.3401,182*/
         private List<string> InitBid(string str)
         {
             List<string> res = new List<string>();
@@ -116,39 +115,6 @@ namespace Parsing
                 string tableXPath = "//table[contains(@class, 'table-horizontal')]";
                 string rowXPath = ".//tr[position()>0]";
                 List<EtfData> etfMarketDatas = new List<EtfData>();
-
-                /*public string Name;
-        public double Last;
-        public double ChangeRercent;
-        public double ChangeAbs;
-        public DateTime Date;
-        public string ISIN;
-        public double? BidFirst;
-        public int? BidLast;
-        public double? AskFirst;
-        public int? AskLast;
-        public int? Total;
-        public char Status; */
-                //EtfData e = new EtfData()
-                //{
-                //    Name = "Primer",
-                //    Last = 265,
-                //    ChangeRercent = 0.54,
-                //    ChangeAbs = 24,
-                //    Date = DateTime.Now,
-                //    ISIN = "GEWGEGW",
-                //    BidFirst = 15.84,
-                //    BidLast = 15,
-                //    AskFirst = 15.48,
-                //    AskLast = 16,
-                //    Total = 45000,
-                //    Status = 'C'
-                //};
-                //etfMarketDatas.Add(e);
-                //SaveToCsv saveToCsv = new SaveToCsv();
-                //saveToCsv.Save(etfMarketDatas);
-
-
                 HtmlWeb web = new HtmlWeb();
                 web.OverrideEncoding = Encoding.UTF8;
                 HtmlDocument page = web.Load(baseUrl);
@@ -157,16 +123,11 @@ namespace Parsing
                     throw new Exception($"Ошибка. Не удалось загрузить страницу по адресу: {baseUrl}");
                 }
                 HtmlNode totalRecordsNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[1]");
-
                 HtmlNode perPageNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[3]");
-
                 perPage = Convert.ToInt32(perPageNode.InnerText);
-
                 totalRecords = Convert.ToInt32(totalRecordsNode.InnerText);
-
                 totalPage = (int)Math.Ceiling((double)totalRecords / perPage);
                 _log.Info("иницилизация прошла успешно");
-
                 _log.Info("парсинг страниц");
                 for (int pageCount = 1; pageCount <= totalPage; pageCount++)
                 {
@@ -174,8 +135,6 @@ namespace Parsing
                     page = web.Load($"{baseUrl}?c8001-page={pageCount}");
                     if (page == null)
                     {
-                        //_log.Error($"Ошибка. Не удалось загрузить страницу: {baseUrl}?c8001-page={pageCount}");
-
                         throw new Exception($"Ошибка. Не удалось загрузить страницу по адресу: {baseUrl}?c8001-page={pageCount}");
                     }
                     _log.Info($"успешная загрузка {pageCount} страницы");
@@ -183,8 +142,6 @@ namespace Parsing
                     HtmlNode table = page.DocumentNode.SelectSingleNode(tableXPath);
                     if (table == null)
                     {
-                        // _log.Error($"Ошибка. Не удалось загрузить таблицу:");
-
                         throw new Exception($"Ошибка. Не удалось загрузить таблицу:");
                     }
                     _log.Info($"успешная загрузка таблицы с данными");
@@ -218,7 +175,6 @@ namespace Parsing
                             etfMarketDatas.Add(etf);
                             Console.WriteLine($"{etf.Name}  {etf.Last}  {etf.ChangeRercent}  {etf.ChangeAbs} {etf.Date} {etf.ISIN} {etf.BidFirst} {etf.BidLast} {etf.AskFirst} {etf.AskLast} {etf.Total} {etf.Status}");
                         }
-
                     }
                 }
                 _log.Info($"{countRecords} записей из {totalRecords} записей успешно спарсились");

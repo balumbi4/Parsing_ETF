@@ -25,19 +25,19 @@ namespace Parsing
                 .Name("ISIN");
             Map(m => m.BidFirst)
                 .Name("BidFirst")
-                .Convert(args => args.Value.BidFirst?.ToString() ?? "-");  // Если LastPrice == null → "-"
+                .Convert(args => args.Value.BidFirst?.ToString() ?? "-");
             Map(m => m.BidLast)
                 .Name("BidLast")
-                .Convert(args => args.Value.BidLast?.ToString() ?? "-");  // Если LastPrice == null → "-"
+                .Convert(args => args.Value.BidLast?.ToString() ?? "-");
             Map(m => m.AskFirst)
                 .Name("AskFirst")
-                .Convert(args => args.Value.AskFirst?.ToString() ?? "-");  // Если LastPrice == null → "-"
+                .Convert(args => args.Value.AskFirst?.ToString() ?? "-");
             Map(m => m.AskLast)
                 .Name("AskLast")
-                .Convert(args => args.Value.AskLast?.ToString() ?? "-");  // Если LastPrice == null → "-"
+                .Convert(args => args.Value.AskLast?.ToString() ?? "-");
             Map(m => m.Total)
                 .Name("Total")
-                .Convert(args => args.Value.Total?.ToString() ?? "-");  // Если LastPrice == null → "-"
+                .Convert(args => args.Value.Total?.ToString() ?? "-");
             Map(m => m.Status)
                 .Name("Status");
         }
