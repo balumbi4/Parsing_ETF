@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace Parsing
 {
-    internal class EtfMarketData
+    internal class EtfData
     {
         public string Name;
         public double Last;

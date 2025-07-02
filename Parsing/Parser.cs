@@ -14,7 +14,7 @@ namespace Parsing
     internal class Parser
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Parser));
-        public DateTime Str2DateTime(string str)
+        private DateTime Str2DateTime(string str)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Parsing
                 return DateTime.MinValue;
             }
         }
-        public double? Str2Double(string str)
+        private double? Str2Double(string str)
         {
             if (str == "-")
             {
@@ -54,7 +54,7 @@ namespace Parsing
             res = Convert.ToDouble(str);
             return res;
         }
-        public int? Str2Int32(string str)
+        private int? Str2Int32(string str)
         {
             if (str == "-")
             {
@@ -65,7 +65,7 @@ namespace Parsing
             return res;
         }
         /*25.3401,182*/
-        public List<string> InitBid(string str)
+        private List<string> InitBid(string str)
         {
             List<string> res = new List<string>();
             if (str == "--")
@@ -85,7 +85,7 @@ namespace Parsing
             }
             return res;
         }
-        public List<string> InitAsk(string str)
+        private List<string> InitAsk(string str)
         {
             List<string> res = new List<string>();
             if (str == "--")
@@ -110,13 +110,12 @@ namespace Parsing
             try
             {
                 XmlConfigurator.Configure(new FileInfo("../../../loggerConfig.xml"));
-                _log.Info("иницилизация необходимых компонентов");
-                _log.Info("иницилизация переменных perPage totalRecords totalPage countRecords baseUrl и списка etfMarketDatas");
+                _log.Info("иницилизания переменных");
                 int perPage, totalRecords, totalPage = 0, countRecords = 0;
                 string baseUrl = "https://www.wienerborse.at/en/exchange-traded-funds/";
                 string tableXPath = "//table[contains(@class, 'table-horizontal')]";
                 string rowXPath = ".//tr[position()>0]";
-                List<EtfMarketData> etfMarketDatas = new List<EtfMarketData>();
+                List<EtfData> etfMarketDatas = new List<EtfData>();
 
                 /*public string Name;
         public double Last;
@@ -130,78 +129,61 @@ namespace Parsing
         public int? AskLast;
         public int? Total;
         public char Status; */
-                EtfMarketData e = new EtfMarketData()
-                {
-                    Name = "Primer",
-                    Last = 265,
-                    ChangeRercent = 0.54,
-                    ChangeAbs = 24,
-                    Date = DateTime.Now,
-                    ISIN = "GEWGEGW",
-                    BidFirst = 15.84,
-                    BidLast = 15,
-                    AskFirst = 15.48,
-                    AskLast = 16,
-                    Total = 45000,
-                    Status = 'C'
-                };
-                etfMarketDatas.Add(e);
-                SaveToCsv saveToCsv = new SaveToCsv();
-                saveToCsv.Save(etfMarketDatas);
+                //EtfData e = new EtfData()
+                //{
+                //    Name = "Primer",
+                //    Last = 265,
+                //    ChangeRercent = 0.54,
+                //    ChangeAbs = 24,
+                //    Date = DateTime.Now,
+                //    ISIN = "GEWGEGW",
+                //    BidFirst = 15.84,
+                //    BidLast = 15,
+                //    AskFirst = 15.48,
+                //    AskLast = 16,
+                //    Total = 45000,
+                //    Status = 'C'
+                //};
+                //etfMarketDatas.Add(e);
+                //SaveToCsv saveToCsv = new SaveToCsv();
+                //saveToCsv.Save(etfMarketDatas);
 
 
-                _log.Info("иницилизация основных элементов HtmlAgilityPack");
-                _log.Info("иницилизация HtmlWeb");
                 HtmlWeb web = new HtmlWeb();
                 web.OverrideEncoding = Encoding.UTF8;
-                _log.Info("иницилизация HtmlDocument");
                 HtmlDocument page = web.Load(baseUrl);
                 if (page == null)
                 {
-                    _log.Error($"Ошибка. Не удалось загрузить страницу: {baseUrl}");
-                    throw new Exception($"Ошибка. Не удалось загрузить страницу: {baseUrl}");
+                    throw new Exception($"Ошибка. Не удалось загрузить страницу по адресу: {baseUrl}");
                 }
-                _log.Info("задание значений переменным totalRecordsNode perPageNode perPage totalRecords totalPage");
-                _log.Info("задание значения totalRecordsNode");
                 HtmlNode totalRecordsNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[1]");
-                _log.Info("задание значения totalRecordsNode прошла успешно");
 
-                _log.Info("задание значения perPageNode");
                 HtmlNode perPageNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[3]");
-                _log.Info("задание значения perPageNode прошла успешно");
 
-                _log.Info("задание значения perPage");
                 perPage = Convert.ToInt32(perPageNode.InnerText);
-                _log.Info("задание значения perPage прошла успешно");
 
-                _log.Info("задание значения totalRecords");
                 totalRecords = Convert.ToInt32(totalRecordsNode.InnerText);
-                _log.Info("задание значения totalRecords прошла успешно");
 
-                _log.Info("задание значения totalPage");
                 totalPage = (int)Math.Ceiling((double)totalRecords / perPage);
-                _log.Info("задание значения totalPage прошла успешно");
-
                 _log.Info("иницилизация прошла успешно");
 
                 _log.Info("парсинг страниц");
                 for (int pageCount = 1; pageCount <= totalPage; pageCount++)
                 {
-                    _log.Info($"парсинг {pageCount} страницы");
-                    _log.Info($"загрузка {pageCount} страницы");
+                    _log.Info($"парсинг {pageCount} страницы по адресу: {baseUrl}?c8001-page={pageCount}");
                     page = web.Load($"{baseUrl}?c8001-page={pageCount}");
                     if (page == null)
                     {
-                        _log.Error($"Ошибка. Не удалось загрузить страницу: {baseUrl}?c8001-page={pageCount}");
+                        //_log.Error($"Ошибка. Не удалось загрузить страницу: {baseUrl}?c8001-page={pageCount}");
 
-                        throw new Exception($"Ошибка. Не удалось загрузить страницу: {baseUrl}?c8001-page={pageCount}");
+                        throw new Exception($"Ошибка. Не удалось загрузить страницу по адресу: {baseUrl}?c8001-page={pageCount}");
                     }
                     _log.Info($"успешная загрузка {pageCount} страницы");
                     _log.Info($"загрузка таблицы с данными");
                     HtmlNode table = page.DocumentNode.SelectSingleNode(tableXPath);
-                    if (page == null)
+                    if (table == null)
                     {
-                        _log.Error($"Ошибка. Не удалось загрузить таблицу:");
+                        // _log.Error($"Ошибка. Не удалось загрузить таблицу:");
 
                         throw new Exception($"Ошибка. Не удалось загрузить таблицу:");
                     }
@@ -212,16 +194,12 @@ namespace Parsing
                         var cells = row.SelectNodes(".//td");
                         if (cells != null && cells.Count >= 8)
                         {
-                            _log.Info("иницилизация вспомогательных списков Change Bid Ask");
                             List<string> Change = HtmlEntity.DeEntitize(cells[2].InnerText).Replace("%", " ").Replace(".", ",").Split(' ').ToList();
-                            _log.Info("иницилизация Change прошла успешно");
                             List<string> Bid = InitBid(cells[5].InnerText);
-                            _log.Info("иницилизация Bid прошла успешно");
                             List<string> Ask = InitAsk(cells[6].InnerText);
-                            _log.Info("иницилизация Ask прошла успешно");
-                            _log.Info($"иницилизация {++countRecords} записи");
+                            _log.Info($"иницилизация {++countRecords} записи из {totalRecords} записей");
                             Console.WriteLine($"!!!{countRecords}!!!");
-                            EtfMarketData etf = new EtfMarketData
+                            EtfData etf = new EtfData
                             {
                                 Name = cells[0].InnerText,
                                 Last = Convert.ToDouble(HtmlEntity.DeEntitize(cells[1].InnerText).Replace(",", "").Replace(".", ",")),
@@ -236,15 +214,16 @@ namespace Parsing
                                 Total = Str2Int32(cells[7].InnerText.Replace(",", "")),
                                 Status = Convert.ToChar(cells[8].InnerText)
                             };
-                            _log.Info($"иницилизация {countRecords} записи прошла успешно");
+                            _log.Info($"иницилизация {countRecords} записи из {totalRecords} записей прошла успешно");
                             etfMarketDatas.Add(etf);
                             Console.WriteLine($"{etf.Name}  {etf.Last}  {etf.ChangeRercent}  {etf.ChangeAbs} {etf.Date} {etf.ISIN} {etf.BidFirst} {etf.BidLast} {etf.AskFirst} {etf.AskLast} {etf.Total} {etf.Status}");
                         }
 
                     }
                 }
-                //SaveToCsv saveToCsv = new SaveToCsv();
-                //saveToCsv.Save(etfMarketDatas);
+                _log.Info($"{countRecords} записей из {totalRecords} записей успешно спарсились");
+                SaveToCsv saveToCsv = new SaveToCsv();
+                saveToCsv.Save(etfMarketDatas);
             }
             catch (System.Net.WebException ex)
             {

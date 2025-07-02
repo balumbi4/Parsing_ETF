@@ -76,8 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EtfMap.cs" />
     <Compile Include="SaveToCsv.cs" />
-    <Compile Include="EtfMarketData.cs" />
+    <Compile Include="EtfData.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
