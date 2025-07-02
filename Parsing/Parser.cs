@@ -64,6 +64,7 @@ namespace Parsing
             res = Convert.ToInt32(str);
             return res;
         }
+        /*25.3401,182*/
         public List<string> InitBid(string str)
         {
             List<string> res = new List<string>();
@@ -72,7 +73,16 @@ namespace Parsing
                 res.Add("-");
                 res.Add("-");
             }
-            else { res = HtmlEntity.DeEntitize(str).Replace(",", "").Replace(".", ",").Insert(7, " ").Split(' ').ToList(); }
+            else
+            {
+                str = HtmlEntity.DeEntitize(str).Replace(",", "").Replace(".", ",");
+                int index = str.IndexOf(",");
+                if (index != -1)
+                {
+                    str = str.Insert(index + 4, " ");
+                }
+                res = str.Split(' ').ToList();
+            }
             return res;
         }
         public List<string> InitAsk(string str)
@@ -85,40 +95,45 @@ namespace Parsing
             }
             else
             {
-                foreach (var sim in str)
+                str = HtmlEntity.DeEntitize(str).Replace(",", "").Replace(".", ",");
+                int index = str.IndexOf(",");
+                if (index != -1)
                 {
-                    if (sim == ',')
-                    {
-                        str.Insert(sim + 2, " ");
-                    }
+                    str = str.Insert(index + 4, " ");
                 }
-                res = HtmlEntity.DeEntitize(str).Replace(",", "").Replace(".", ",").Insert(7, " ").Split(' ').ToList();
+                res = str.Split(' ').ToList();
             }
             return res;
         }
         public void Out()
         {
-            XmlConfigurator.Configure(new FileInfo("../../../loggerConfig.xml"));
-            _log.Info("иницилизация необходимых компонентов");
-            _log.Info("иницилизация переменных и списка");
-            int perPage, totalRecords, totalPage = 0, countRecords = 0;
-            string baseUrl = "https://www.wienerborse.at/en/exchange-traded-funds/";
-            List<EtfMarketData> etfMarketDatas = new List<EtfMarketData>();
-
-            _log.Info("иницилизация основных элементов HtmlAgilityPack");
-            HtmlWeb web = new HtmlWeb();
-            web.OverrideEncoding = Encoding.UTF8;
-            HtmlDocument page = web.Load(baseUrl);
-
-            _log.Info("задиния значений переменным");
-            HtmlNode totalRecordsNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[1]");
-            HtmlNode perPageNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[3]");
-            perPage = Convert.ToInt32(perPageNode.InnerText);
-            totalRecords = Convert.ToInt32(totalRecordsNode.InnerText);
-            totalPage = (int)Math.Ceiling((double)totalRecords / perPage);
-            _log.Info("иницилизация прошла успешно");
             try
             {
+                XmlConfigurator.Configure(new FileInfo("../../../loggerConfig.xml"));
+                _log.Info("иницилизация необходимых компонентов");
+                _log.Info("иницилизация переменных perPage totalRecords totalPage countRecords baseUrl и списка etfMarketDatas");
+                int perPage, totalRecords, totalPage = 0, countRecords = 0;
+                string baseUrl = "https://www.wienerborse.at/en/exchange-traded-funds/";
+                List<EtfMarketData> etfMarketDatas = new List<EtfMarketData>();
+
+                _log.Info("иницилизация основных элементов HtmlAgilityPack");
+                _log.Info("иницилизация HtmlWeb");
+                HtmlWeb web = new HtmlWeb();
+                web.OverrideEncoding = Encoding.UTF8;
+                _log.Info("иницилизация HtmlDocument");
+                HtmlDocument page = web.Load(baseUrl);
+                if (page == null)
+                {
+
+                }
+                _log.Info("задиния значений переменным");
+                HtmlNode totalRecordsNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[1]");
+                HtmlNode perPageNode = page.DocumentNode.SelectSingleNode("//*[@id=\"c8001-module\"]/div/div[2]/div[1]/div[1]/div[1]/div/div/b[3]");
+                perPage = Convert.ToInt32(perPageNode.InnerText);
+                totalRecords = Convert.ToInt32(totalRecordsNode.InnerText);
+                totalPage = (int)Math.Ceiling((double)totalRecords / perPage);
+                _log.Info("иницилизация прошла успешно");
+
                 _log.Info("парсинг страниц");
                 for (int pageCount = 1; pageCount <= totalPage; pageCount++)
                 {
@@ -164,6 +179,8 @@ namespace Parsing
 
                     }
                 }
+                SaveToCsv saveToCsv = new SaveToCsv();
+                saveToCsv.Save(etfMarketDatas);
             }
             catch (Exception ex)
             {
@@ -171,8 +188,6 @@ namespace Parsing
                 Console.WriteLine("ошибка!! подробнее в логе - " + ex.Message);
                 return;
             }
-            SaveToCsv saveToCsv = new SaveToCsv();
-            saveToCsv.Save(etfMarketDatas);
         }
     }
 }
