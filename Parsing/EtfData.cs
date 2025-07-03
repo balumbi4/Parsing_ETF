@@ -10,9 +10,9 @@ namespace Parsing
     internal class EtfData
     {
         public string Name;
-        public double Last;
-        public double ChangeRercent;
-        public double ChangeAbs;
+        public double? Last;
+        public double? ChangePercent;
+        public double? ChangeAbs;
         public DateTime Date;
         public string ISIN;
         public double? BidFirst;

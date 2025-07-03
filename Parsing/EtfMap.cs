@@ -14,11 +14,14 @@ namespace Parsing
             Map(m => m.Name)
                 .Name("Name");
             Map(m => m.Last)
-                .Name("Last");
-            Map(m => m.ChangeRercent)
-                .Name("ChangeRercent");
+                .Name("Last")
+                .Convert(args => args.Value.Last?.ToString() ?? "-");
+            Map(m => m.ChangePercent)
+                .Name("ChangePercent")
+                .Convert(args => args.Value.ChangePercent?.ToString() ?? "-");
             Map(m => m.ChangeAbs)
-                .Name("ChangeAbs");
+                .Name("ChangeAbs")
+                .Convert(args => args.Value.ChangeAbs?.ToString() ?? "-");
             Map(m => m.Date)
                 .Name("Date");
             Map(m => m.ISIN)

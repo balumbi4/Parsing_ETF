@@ -53,6 +53,22 @@ namespace Parsing
             str = str.Replace("%", "").Replace(".", ",");
             res = Convert.ToDouble(str);
             return res;
+            /*if (str == "--")
+           {
+               res.Add("-");
+               res.Add("-");
+           }
+           else
+           {
+               str = HtmlEntity.DeEntitize(str).Replace(",", "").Replace(".", ",");
+               int index = str.IndexOf(",");
+               if (index != -1)
+               {
+                   str = str.Insert(index + 4, " ");
+               }
+               res = str.Split(' ').ToList();
+           }
+           return res;*/
         }
         private int? Str2Int32(string str)
         {
@@ -62,6 +78,29 @@ namespace Parsing
             }
             int res;
             res = Convert.ToInt32(str);
+            return res;
+
+           
+        }
+        private List<string> InitChange(string str)
+        {
+            /*-0.02%-0.020*/
+            List<string> res = new List<string>();
+            if (str == "--")
+            {
+                res.Add("-");
+                res.Add("-");
+            }
+            else
+            {
+                str = HtmlEntity.DeEntitize(str).Replace("%"," ").Replace(".",",");
+                int index = str.IndexOf(",");
+                if (index != -1)
+                {
+                    str = str.Insert(index + 4, " ");
+                }
+                res = str.Split(' ').ToList();
+            }
             return res;
         }
         private List<string> InitBid(string str)
@@ -151,7 +190,7 @@ namespace Parsing
                         var cells = row.SelectNodes(".//td");
                         if (cells != null && cells.Count >= 8)
                         {
-                            List<string> Change = HtmlEntity.DeEntitize(cells[2].InnerText).Replace("%", " ").Replace(".", ",").Split(' ').ToList();
+                            List<string> Change = InitChange(cells[2].InnerText);
                             List<string> Bid = InitBid(cells[5].InnerText);
                             List<string> Ask = InitAsk(cells[6].InnerText);
                             _log.Info($"иницилизация {++countRecords} записи из {totalRecords} записей");
@@ -160,8 +199,8 @@ namespace Parsing
                             {
                                 Name = cells[0].InnerText,
                                 Last = Convert.ToDouble(HtmlEntity.DeEntitize(cells[1].InnerText).Replace(",", "").Replace(".", ",")),
-                                ChangeRercent = Convert.ToDouble(Change.First()),
-                                ChangeAbs = Convert.ToDouble(Change.Last()),
+                                ChangePercent = Convert.ToDouble(Change.First().Replace(".", ",")),
+                                ChangeAbs = Str2Double(Change.Last()),
                                 Date = Str2DateTime(cells[3].InnerText),
                                 ISIN = cells[4].InnerText,
                                 BidFirst = Str2Double(Bid.First()),
@@ -173,7 +212,7 @@ namespace Parsing
                             };
                             _log.Info($"иницилизация {countRecords} записи из {totalRecords} записей прошла успешно");
                             etfMarketDatas.Add(etf);
-                            Console.WriteLine($"{etf.Name}  {etf.Last}  {etf.ChangeRercent}  {etf.ChangeAbs} {etf.Date} {etf.ISIN} {etf.BidFirst} {etf.BidLast} {etf.AskFirst} {etf.AskLast} {etf.Total} {etf.Status}");
+                            Console.WriteLine($"{etf.Name}  {etf.Last}  {etf.ChangePercent}  {etf.ChangeAbs} {etf.Date} {etf.ISIN} {etf.BidFirst} {etf.BidLast} {etf.AskFirst} {etf.AskLast} {etf.Total} {etf.Status}");
                         }
                     }
                 }
