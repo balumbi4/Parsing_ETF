@@ -13,7 +13,7 @@ namespace Parsing
         public double? Last;
         public double? ChangePercent;
         public double? ChangeAbs;
-        public DateTime Date;
+        public DateTime? Date;
         public string ISIN;
         public double? BidFirst;
         public int? BidLast;

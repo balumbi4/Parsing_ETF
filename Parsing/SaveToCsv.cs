@@ -18,30 +18,46 @@ namespace Parsing
         public void Save(List<EtfData> etfMarketDatas)
         {
             string pathFile = $"{DateTime.Now.ToString().Remove(0, 11).Replace(":", "_")}" + ".tsv";
-            string pathDir = DateTime.Now.ToString().Remove(10).Replace(".", "_");
+            string pathDir = "CSV";
             if (!Directory.Exists(pathDir))
             {
                 Directory.CreateDirectory(pathDir);
             }
-            string pathCsv = Path.Combine(Directory.GetCurrentDirectory(), pathDir, pathFile);
+            pathDir = Path.Combine(Directory.GetCurrentDirectory(), pathDir, DateTime.Now.ToString().Remove(10).Replace(".", "_"));
+            if (!Directory.Exists(pathDir))
+            {
+                Directory.CreateDirectory(pathDir);
+            }
+            string pathCsv = Path.Combine(Directory.GetCurrentDirectory() , pathDir, pathFile);
+            
             if (!File.Exists(pathCsv))
             {
                 File.Create(pathCsv).Close();
             }
-            using (var writer = new StreamWriter(pathCsv))
+            _log.Info($"запись данных в файл {pathCsv}");
+            try
             {
-                var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+
+                using (var writer = new StreamWriter(pathCsv))
                 {
-                    Encoding = new UTF8Encoding(true),
-                    Delimiter = "\t",
-                    HasHeaderRecord = true,
-                };
-                using (var csv = new CsvWriter(writer, csvConfig))
-                {
-                    csv.Context.RegisterClassMap<EtfMap>();
-                    csv.WriteRecords(etfMarketDatas);
+                    var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Encoding = new UTF8Encoding(true),
+                        Delimiter = "\t",
+                        HasHeaderRecord = true,
+                    };
+                    using (var csv = new CsvWriter(writer, csvConfig))
+                    {
+                        csv.Context.RegisterClassMap<EtfMap>();
+                        csv.WriteRecords(etfMarketDatas);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                _log.Error($"ошибка при записи. текст ошибки: {ex.Message}");
+            }
+            _log.Info($"все данные записаны успешно");
         }
     }
 }

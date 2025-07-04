@@ -23,7 +23,8 @@ namespace Parsing
                 .Name("ChangeAbs")
                 .Convert(args => args.Value.ChangeAbs?.ToString() ?? "-");
             Map(m => m.Date)
-                .Name("Date");
+                .Name("Date")
+                .Convert(args => args.Value.Date?.ToString() ?? "-");
             Map(m => m.ISIN)
                 .Name("ISIN");
             Map(m => m.BidFirst)

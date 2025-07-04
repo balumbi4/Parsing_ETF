@@ -14,8 +14,12 @@ namespace Parsing
     internal class Parser
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Parser));
-        private DateTime Str2DateTime(string str)
+        private DateTime? Str2DateTime(string str)
         {
+            if (str == "-")
+            {
+                return null;
+            }
             try
             {
                 DateTime res;
@@ -50,7 +54,7 @@ namespace Parsing
                 return null;
             }
             double res;
-            str = str.Replace("%", "").Replace(".", ",");
+            str = str.Replace("%", "").Replace(",", "").Replace(".", ",");
             res = Convert.ToDouble(str);
             return res;
             /*if (str == "--")
@@ -198,7 +202,7 @@ namespace Parsing
                             EtfData etf = new EtfData
                             {
                                 Name = cells[0].InnerText,
-                                Last = Convert.ToDouble(HtmlEntity.DeEntitize(cells[1].InnerText).Replace(",", "").Replace(".", ",")),
+                                Last = Str2Double(HtmlEntity.DeEntitize(cells[1].InnerText)),
                                 ChangePercent = Convert.ToDouble(Change.First().Replace(".", ",")),
                                 ChangeAbs = Str2Double(Change.Last()),
                                 Date = Str2DateTime(cells[3].InnerText),
