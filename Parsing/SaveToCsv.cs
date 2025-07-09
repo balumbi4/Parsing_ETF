@@ -37,7 +37,6 @@ namespace Parsing
             _log.Info($"запись данных в файл {pathCsv}");
             try
             {
-
                 using (var writer = new StreamWriter(pathCsv))
                 {
                     var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
