@@ -17,30 +17,30 @@ namespace Parsing
                 .Name("Last")
                 .Convert(args => args.Value.Last?.ToString() ?? "-");
             Map(m => m.ChangePercent)
-                .Name("ChangePercent")
+                .Name("Chg. % 1D")
                 .Convert(args => args.Value.ChangePercent?.ToString() ?? "-");
             Map(m => m.ChangeAbs)
-                .Name("ChangeAbs")
+                .Name("Chg. Abs.")
                 .Convert(args => args.Value.ChangeAbs?.ToString() ?? "-");
             Map(m => m.Date)
-                .Name("Date")
+                .Name("Date Time")
                 .Convert(args => args.Value.Date?.ToString() ?? "-");
             Map(m => m.ISIN)
                 .Name("ISIN");
-            Map(m => m.BidFirst)
-                .Name("BidFirst")
-                .Convert(args => args.Value.BidFirst?.ToString() ?? "-");
-            Map(m => m.BidLast)
-                .Name("BidLast")
-                .Convert(args => args.Value.BidLast?.ToString() ?? "-");
-            Map(m => m.AskFirst)
-                .Name("AskFirst")
-                .Convert(args => args.Value.AskFirst?.ToString() ?? "-");
-            Map(m => m.AskLast)
-                .Name("AskLast")
-                .Convert(args => args.Value.AskLast?.ToString() ?? "-");
+            Map(m => m.Bid)
+                .Name("Bid")
+                .Convert(args => args.Value.Bid?.ToString() ?? "-");
+            Map(m => m.BidVolume)
+                .Name("Bid volume")
+                .Convert(args => args.Value.BidVolume?.ToString() ?? "-");
+            Map(m => m.Ask)
+                .Name("Ask")
+                .Convert(args => args.Value.Ask?.ToString() ?? "-");
+            Map(m => m.AskVolume)
+                .Name("Ask volume")
+                .Convert(args => args.Value.AskVolume?.ToString() ?? "-");
             Map(m => m.Total)
-                .Name("Total")
+                .Name("Total volume")
                 .Convert(args => args.Value.Total?.ToString() ?? "-");
             Map(m => m.Status)
                 .Name("Status");

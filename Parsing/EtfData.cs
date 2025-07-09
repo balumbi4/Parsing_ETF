@@ -15,10 +15,10 @@ namespace Parsing
         public double? ChangeAbs;
         public DateTime? Date;
         public string ISIN;
-        public double? BidFirst;
-        public int? BidLast;
-        public double? AskFirst;
-        public int? AskLast;
+        public double? Bid;
+        public int? BidVolume;
+        public double? Ask;
+        public int? AskVolume;
         public int? Total;
         public char Status;    
     }
