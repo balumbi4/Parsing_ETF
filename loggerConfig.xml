@@ -8,7 +8,7 @@
 	<log4net>
 		<appender name="RollingFile" type="log4net.Appender.RollingFileAppender">
 			<file value="logs\\LOG-" />
-			<datePattern value="yyyy-MM-dd'.txt'"/>
+			<datePattern value="yyyy-MM-dd'.log'"/>
 			<appendToFile value="true" />
 			<staticLogFileName value="false"/>
 			<maximumFileSize value="10MB" />

@@ -17,7 +17,7 @@ namespace Parsing
         private static readonly ILog _log = LogManager.GetLogger(typeof(SaveToCsv));
         public void Save(List<EtfData> etfMarketDatas)
         {
-            string pathFile = $"{DateTime.Now.ToString().Remove(0, 11).Replace(":", "_")}" + ".tsv";
+            string pathFile = $"{DateTime.Now.ToString().Remove(0, 11).Replace(":", "_")}" + ".csv";
             string pathDir = "CSV";
             if (!Directory.Exists(pathDir))
             {
