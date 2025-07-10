@@ -69,7 +69,7 @@ namespace Parsing
             res = Convert.ToInt32(str);
             return res;
         }
-        private List<string> InitDate(string str, string whois)
+        private List<string> InitData(string str, string whois)
         {
             List<string> res = new List<string>();
             if (str == "--")
@@ -124,9 +124,9 @@ namespace Parsing
                         var cells = row.SelectNodes(".//td");
                         if (cells != null && cells.Count >= 8)
                         {
-                            List<string> Change = InitDate(cells[2].InnerText, "Change");
-                            List<string> Bid = InitDate(cells[5].InnerText, "Bid");
-                            List<string> Ask = InitDate(cells[6].InnerText, "Ask");
+                            List<string> Change = InitData(cells[2].InnerText, "Change");
+                            List<string> Bid = InitData(cells[5].InnerText, "Bid");
+                            List<string> Ask = InitData(cells[6].InnerText, "Ask");
                             _log.Info($"иницилизация {++countRecords} записи из {totalRecords} записей");
                             Console.WriteLine($"!!!{countRecords}!!!");
                             try

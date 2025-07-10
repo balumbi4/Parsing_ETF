@@ -9,7 +9,7 @@ namespace Parsing
 {
     internal class EtfMap : ClassMap<EtfData>
     {
-        public EtfMap()
+        private EtfMap()
         {
             Map(m => m.Name)
                 .Name("Name");

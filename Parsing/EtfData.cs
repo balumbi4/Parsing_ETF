@@ -20,6 +20,6 @@ namespace Parsing
         public double? Ask;
         public int? AskVolume;
         public int? Total;
-        public char Status;    
+        public char Status;
     }
 }
