@@ -1,10 +1,7 @@
 ﻿using log4net;
-using log4net.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.IO;
@@ -28,8 +25,8 @@ namespace Parsing
             {
                 Directory.CreateDirectory(pathDir);
             }
-            string pathCsv = Path.Combine(Directory.GetCurrentDirectory() , pathDir, pathFile);
-            
+            string pathCsv = Path.Combine(Directory.GetCurrentDirectory(), pathDir, pathFile);
+
             if (!File.Exists(pathCsv))
             {
                 File.Create(pathCsv).Close();
@@ -47,7 +44,6 @@ namespace Parsing
                     };
                     using (var csv = new CsvWriter(writer, csvConfig))
                     {
-                        csv.Context.RegisterClassMap<EtfMap>();
                         csv.WriteRecords(etfMarketDatas);
                     }
                 }

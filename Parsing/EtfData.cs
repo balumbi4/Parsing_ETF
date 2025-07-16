@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
-
-namespace Parsing
+﻿namespace Parsing
 {
     internal class EtfData
     {
-        public string Name;
-        public double? Last;
-        public double? ChangePercent;
-        public double? ChangeAbs;
-        public DateTime? Date;
-        public string ISIN;
-        public double? Bid;
-        public int? BidVolume;
-        public double? Ask;
-        public int? AskVolume;
-        public int? Total;
-        public char Status;
+        public string Name { get; set; }
+        public string Last { get; set; }
+        public string ChangePercent { get; set; }
+        public string ChangeAbs { get; set; }
+        public string Date { get; set; }
+        public string ISIN { get; set; }
+        public string Bid { get; set; }
+        public string BidVolume { get; set; }
+        public string Ask { get; set; }
+        public string AskVolume { get; set; }
+        public string Total { get; set; }
+        public string Status { get; set; }
     }
 }

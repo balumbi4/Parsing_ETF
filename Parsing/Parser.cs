@@ -1,75 +1,16 @@
 ﻿using log4net;
-using log4net.Config;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Web.UI.WebControls;
 
 namespace Parsing
 {
     internal class Parser
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Parser));
-        private DateTime? Str2DateTime(string str)
-        {
-            if (str == "-")
-            {
-                return null;
-            }
-            try
-            {
-                DateTime res;
-                str = str.Replace("/", " ").Replace(":", " ").Insert(10, " ");
-                int[] date = new int[6];
-                string segment = "";
-                int i = 0;
-                foreach (var item in str)
-                {
-                    segment += item;
-                    if (item == ' ')
-                    {
-                        date[i++] = Convert.ToInt32(segment);
-                        segment = "";
-                    }
-                }
-                date[i++] = Convert.ToInt32(segment);
-                res = new DateTime(date[2], date[0], date[1], date[3], date[4], date[5]);
-                return res;
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                _log.Error(ex.Message);
-                Console.WriteLine("ошибка! подробнее в логе - " + ex.Message);
-                return null;
-            }
-        }
-        private double? Str2Double(string str)
-        {
-            if (str == "-")
-            {
-                return null;
-            }
-            double res;
-            str = str.Replace(".", ",");
-            res = Convert.ToDouble(str);
-            return res;
-        }
-        private int? Str2Int32(string str)
-        {
-            if (str == "-")
-            {
-                return null;
-            }
-            int res;
-            str = str.Replace(",", "");
-            res = Convert.ToInt32(str);
-            return res;
-        }
-        private List<string> InitData(string str, string whois)
+        private List<string> InitData(string str)
         {
             List<string> res = new List<string>();
             if (str == "--")
@@ -93,7 +34,6 @@ namespace Parsing
         {
             try
             {
-                XmlConfigurator.Configure(new FileInfo("../../../loggerConfig.xml"));
                 _log.Info("иницилизания переменных");
                 int perPage, totalRecords, totalPage = 0, countRecords = 0;
                 string baseUrl = "https://www.wienerborse.at/en/exchange-traded-funds/";
@@ -124,9 +64,6 @@ namespace Parsing
                         var cells = row.SelectNodes(".//td");
                         if (cells != null && cells.Count >= 8)
                         {
-                            List<string> Change = InitData(cells[2].InnerText, "Change");
-                            List<string> Bid = InitData(cells[5].InnerText, "Bid");
-                            List<string> Ask = InitData(cells[6].InnerText, "Ask");
                             _log.Info($"иницилизация {++countRecords} записи из {totalRecords} записей");
                             Console.WriteLine($"!!!{countRecords}!!!");
                             try
@@ -134,17 +71,17 @@ namespace Parsing
                                 EtfData etf = new EtfData
                                 {
                                     Name = cells[0].InnerText,
-                                    Last = Str2Double(cells[1].InnerText.Replace(",", "")),
-                                    ChangePercent = Str2Double(Change.First()),
-                                    ChangeAbs = Str2Double(Change.Last()),
-                                    Date = Str2DateTime(cells[3].InnerText),
+                                    Last = cells[1].InnerText,
+                                    ChangePercent = InitData(cells[2].InnerText).First(),
+                                    ChangeAbs = InitData(cells[2].InnerText).Last(),
+                                    Date = cells[3].InnerText,
                                     ISIN = cells[4].InnerText,
-                                    Bid = Str2Double(Bid.First()),
-                                    BidVolume = Str2Int32(Bid.Last()),
-                                    Ask = Str2Double(Ask.First()),
-                                    AskVolume = Str2Int32(Ask.Last()),
-                                    Total = Str2Int32(cells[7].InnerText),
-                                    Status = Convert.ToChar(cells[8].InnerText)
+                                    Bid = InitData(cells[5].InnerText).First(),
+                                    BidVolume = InitData(cells[5].InnerText).Last(),
+                                    Ask = InitData(cells[6].InnerText).First(),
+                                    AskVolume = InitData(cells[6].InnerText).Last(),
+                                    Total = cells[7].InnerText,
+                                    Status = cells[8].InnerText
                                 };
                                 _log.Info($"иницилизация {countRecords} записи из {totalRecords} записей прошла успешно");
                                 etfMarketDatas.Add(etf);

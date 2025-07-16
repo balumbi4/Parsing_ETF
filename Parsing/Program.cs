@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using log4net.Config;
+using System.IO;
+
 
 namespace Parsing
 {
     internal class Program
     {
-        static void Main(string[] args)
-        {          
+        static void Main()
+        {
+            XmlConfigurator.Configure(new FileInfo("../../../loggerConfig.xml"));
             Parser parser = new Parser();
             parser.Parsing();        
         }
